@@ -23,7 +23,7 @@ Route::get('/', function () {
 });
 
 // Kelompok Induk: Hanya bisa diakses oleh user yang sudah Login
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     
     // ==========================================
     // RUTE BERSAMA (Admin & Siswa bisa akses profil)
@@ -58,10 +58,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Laporan Keuangan
         Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
         Route::post('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
-        // Laporan Keuangan
-        Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
-        Route::post('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
-        // Tambahkan rute ekspor excel ini:
         Route::post('/laporan/excel', [LaporanController::class, 'exportExcel'])->name('laporan.excel');
         Route::post('/laporan/pdf', [LaporanController::class, 'exportPdf'])->name('laporan.pdf');
 

@@ -6,22 +6,27 @@ use Illuminate\Http\Request;
 use App\Models\Siswa;
 use App\Models\Pembayaran;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class PortalController extends Controller
 {
+    /**
+     * Ambil data siswa berdasarkan user yang login.
+     * Dipakai oleh semua method agar tidak ada duplikasi kode.
+     */
+    private function getSiswa()
+    {
+        return Siswa::query()->with('kelas')->where('nisn', Auth::user()->username)->first();
+    }
+
     public function index()
     {
-        $user = Auth::user();
-        
-        // Cari data siswa asli di database berdasarkan NISN (username user yang login)
-        $siswa = Siswa::query()->with('kelas')->where('nisn', $user->username)->first();
+        $siswa = $this->getSiswa();
 
-        // Jika data siswa tidak ditemukan (mencegah error)
         if (!$siswa) {
-            return abort(403, 'Data profil siswa tidak ditemukan.');
+            return abort(403, 'Data profil siswa tidak ditemukan. Hubungi administrator.');
         }
 
-        // Ambil daftar tagihan yang belum lunas
         $tagihan_aktif = Pembayaran::query()
                             ->with('tagihan.kategori')
                             ->where('id_siswa', $siswa->id_siswa)
@@ -29,7 +34,6 @@ class PortalController extends Controller
                             ->orderBy('created_at', 'desc')
                             ->get();
 
-        // Ambil riwayat tagihan yang sudah lunas
         $riwayat = Pembayaran::query()
                             ->with('tagihan.kategori')
                             ->where('id_siswa', $siswa->id_siswa)
@@ -39,23 +43,25 @@ class PortalController extends Controller
 
         return view('portal.index', compact('siswa', 'tagihan_aktif', 'riwayat'));
     }
+
     public function caraPembayaran()
     {
-        // Ambil data siswa untuk ditampilkan di Navbar
-        $siswa = Siswa::query()->with('kelas')->where('nisn', Auth::user()->username)->first();
+        $siswa = $this->getSiswa();
+        if (!$siswa) return abort(403, 'Data profil siswa tidak ditemukan.');
         return view('portal.cara-pembayaran', compact('siswa'));
     }
 
     public function bantuan()
     {
-        $siswa = Siswa::query()->with('kelas')->where('nisn', Auth::user()->username)->first();
+        $siswa = $this->getSiswa();
+        if (!$siswa) return abort(403, 'Data profil siswa tidak ditemukan.');
         return view('portal.bantuan', compact('siswa'));
     }
 
     public function profil()
     {
         $user = Auth::user();
-        $siswa = Siswa::query()->with('kelas')->where('nisn', $user->username)->first();
+        $siswa = $this->getSiswa();
         if (!$siswa) return abort(403, 'Data profil siswa tidak ditemukan.');
 
         return view('portal.profil', compact('siswa', 'user'));
@@ -64,12 +70,14 @@ class PortalController extends Controller
     public function updateProfil(Request $request)
     {
         $request->validate([
-            'no_hp' => 'nullable|string|max:20',
+            'no_hp'    => 'nullable|string|max:20|regex:/^[0-9+\-\s]+$/',
             'password' => 'nullable|string|min:8|confirmed',
+        ], [
+            'no_hp.regex' => 'Format nomor HP tidak valid. Gunakan angka, +, atau -.',
         ]);
 
-        $user = Auth::user();
-        $siswa = Siswa::query()->where('nisn', $user->username)->first();
+        $user  = Auth::user();
+        $siswa = $this->getSiswa();
 
         // Update no_hp
         if ($siswa) {
@@ -77,10 +85,9 @@ class PortalController extends Controller
             $siswa->save();
         }
 
-        // Update password if provided
+        // Update password jika diisi
         if ($request->filled('password')) {
-            // Karena auth user mengembalikan class User, kita update user-nya
-            $user->password = \Illuminate\Support\Facades\Hash::make($request->password);
+            $user->password = Hash::make($request->password);
             $user->save();
         }
 
