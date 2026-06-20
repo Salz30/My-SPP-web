@@ -1,59 +1,117 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎓 Aplikasi Pembayaran My-SPP
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**My-SPP** adalah sebuah Sistem Informasi Manajemen Pembayaran Sumbangan Pembinaan Pendidikan (SPP) berbasis web. Aplikasi ini dirancang untuk mendigitalisasi proses pencatatan, pelaporan, dan penagihan iuran SPP di sekolah secara terintegrasi, transparan, dan otomatis.
 
-## About Laravel
+Proyek ini dibangun sebagai pemenuhan Tugas Besar / Ujian Akhir Semester (UAS) pada mata kuliah Pemrograman Web.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Aplikasi ini memiliki 2 hak akses utama: **Admin/Kasir** dan **Siswa**.
 
-## Learning Laravel
+### 👨‍💼 Modul Admin & Kasir
+- **Dasbor Pintar**: Dilengkapi dengan grafik (Chart.js) interaktif yang menampilkan tren pemasukan sekolah secara *real-time* setiap bulannya.
+- **Manajemen Data Induk**: Pengelolaan data Siswa, Kelas, dan Kategori Pembayaran (nominal tagihan).
+- **Kasir Cepat & Otomatis**: Fitur pemrosesan pembayaran SPP dengan satu klik.
+- **Log Aktivitas Keamanan**: Semua transaksi pembayaran diawasi dan dicatat otomatis (siapa kasirnya dan jam berapa) untuk mencegah kecurangan (*fraud*).
+- **Laporan Keuangan**: Fitur filter transaksi berdasarkan status dan tanggal, dilengkapi kemampuan **Cetak Layar**, **Export Excel (.csv)**, dan **Export PDF**.
+- **Notifikasi WhatsApp (Fonnte API)**: Mengirimkan pesan resi pembayaran otomatis ke nomor WhatsApp orang tua/wali murid segera setelah tagihan dilunasi oleh Kasir.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 👨‍🎓 Modul Portal Siswa
+- **Dasbor Siswa**: Siswa dapat login secara mandiri untuk melihat sisa tunggakan SPP mereka.
+- **Riwayat Pembayaran**: Transparansi data di mana siswa bisa melihat tagihan mana saja yang sudah Lunas dan kapan dibayarkan.
+- **Profil & Bantuan**: Fitur untuk mengubah *password* dan memutakhirkan nomor WhatsApp orang tua untuk menerima notifikasi.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🛠️ Teknologi yang Digunakan
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Aplikasi ini dikembangkan menggunakan tumpukan teknologi modern:
+- **Framework**: Laravel 11 (PHP 8.2+)
+- **Database**: MySQL / MariaDB
+- **Frontend**: Blade Templating Engine & CSS Framework
+- **Library Tambahan**: 
+  - `barryvdh/laravel-dompdf` (Cetak Dokumen PDF)
+  - `Chart.js` (Visualisasi Data Grafik)
+  - *Fonnte API* (Gateway Notifikasi WhatsApp)
+  - *Automated QA Testing* (PHPUnit / Laravel Feature Testing)
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🚀 Panduan Instalasi (Untuk Dosen / Penilai)
 
-## Contributing
+Ikuti langkah-langkah berikut untuk menjalankan aplikasi ini di komputer lokal Anda (disarankan menggunakan **Laragon** atau **XAMPP**):
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 1. Persiapan Awal
+Pastikan Anda sudah menginstal **PHP (Minimal versi 8.2)**, **Composer**, dan **MySQL**.
 
-## Code of Conduct
+Buka terminal/Command Prompt, lalu _clone_ repositori ini:
+```bash
+git clone https://github.com/USERNAME-ANDA/NAMA-REPO-ANDA.git
+cd my-spp
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 2. Instalasi Dependensi
+Jalankan perintah berikut untuk mengunduh semua pustaka Laravel:
+```bash
+composer install
+```
 
-## Security Vulnerabilities
+### 3. Konfigurasi Environment (.env)
+Salin file *template* environment bawaan menjadi file utama:
+```bash
+cp .env.example .env
+```
+Buka file `.env` yang baru saja dibuat, lalu sesuaikan konfigurasi database Anda:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=my_spp
+DB_USERNAME=root
+DB_PASSWORD=
+```
+*(Catatan: Buat database kosong terlebih dahulu di MySQL dengan nama `my_spp`)*
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 4. Generate Key & Migrasi Database
+Buat kunci keamanan aplikasi dan struktur database peserta datanya:
+```bash
+php artisan key:generate
+php artisan migrate --seed
+```
+*(Perintah `--seed` sangat penting agar akun Admin default otomatis terbuat)*
 
-## License
+### 5. Menjalankan Aplikasi
+Nyalakan *server* lokal Laravel:
+```bash
+php artisan serve
+```
+Buka browser Anda dan kunjungi: **http://127.0.0.1:8000**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 🔑 Akun Demo (Testing)
+
+Untuk keperluan pengujian aplikasi, silakan gunakan akun berikut yang telah terisi secara otomatis melalui *Database Seeder*:
+
+**Hak Akses Admin / Kasir:**
+- **Email/Username:** `admin@example.com`
+- **Password:** `password`
+
+**Hak Akses Siswa:**
+- Anda bisa login menggunakan **NISN Siswa** yang terdaftar di halaman Admin.
+- **Password Default Siswa:** `password`
+
+---
+
+## 🛡️ Jaminan Kualitas (QA Testing)
+
+Proyek ini telah menerapkan sistem pengujian perangkat lunak terotomasi (*Automated QA Testing*) menggunakan standar industri. Untuk melihat bukti pengujian integritas aplikasi, jalankan:
+```bash
+php artisan test
+```
+*Sistem akan mengeksekusi puluhan skenario uji keamanan hak akses, filter laporan, logika pembayaran, dan jaminan keamanan tagihan dalam waktu kurang dari 5 detik.*
+
+---
+*Dikembangkan dengan ❤️ sebagai Tugas Besar Ujian Akhir Semester.*
