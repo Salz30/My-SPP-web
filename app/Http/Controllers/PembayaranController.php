@@ -8,6 +8,7 @@ use App\Models\Kelas;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use App\Models\LogAktivitas;
+use App\Services\ActivityLogger;
 use Illuminate\Support\Facades\Auth;
 
 class PembayaranController extends Controller
@@ -19,18 +20,21 @@ class PembayaranController extends Controller
         return view('pembayaran.index', compact('pembayaran'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $kelas = Kelas::query()->orderBy('nama_kelas', 'asc')->get();
         
-        // Menambahkan Type Hint "Builder" pada $query
         $kelas_dengan_siswa = Kelas::query()->with(['siswa' => function($query) {
             $query->orderBy('nama_siswa', 'asc');
         }])->orderBy('nama_kelas', 'asc')->get();
 
         $tagihan = Tagihan::query()->with('kategori')->orderBy('created_at', 'desc')->get();
+
+        // Jika ada query param id_tagihan (dari tombol Bebankan di Data Tagihan),
+        // kirim ke view agar tagihan tersebut langsung ter-select otomatis
+        $selected_tagihan = $request->query('id_tagihan');
         
-        return view('pembayaran.create', compact('kelas_dengan_siswa', 'tagihan', 'kelas'));
+        return view('pembayaran.create', compact('kelas_dengan_siswa', 'tagihan', 'kelas', 'selected_tagihan'));
     }
 
     public function store(Request $request)
@@ -97,6 +101,12 @@ class PembayaranController extends Controller
             }
         }
 
+        $tipe = $request->tipe_pembebanan === 'kelas' ? 'Kelas' : ($request->tipe_pembebanan === 'semua' ? 'Semua Siswa' : 'Individu');
+        ActivityLogger::log(
+            'Beban Tagihan',
+            "Membebankan tagihan \"{$tagihan->nama_tagihan}\" ke {$count_success} siswa (metode: {$tipe}). {$count_skip} siswa dilewati karena sudah ada."
+        );
+
         return redirect()->route('pembayaran.index')->with('success', "Berhasil membebankan tagihan kepada $count_success siswa. ($count_skip dilewati).");
     }
 
@@ -110,7 +120,8 @@ class PembayaranController extends Controller
     {
         // 1. Validasi input dari form
         $request->validate([
-            'status_bayar' => 'required|in:Lunas,Belum Lunas',
+            'status_bayar'  => 'required|in:Lunas,Belum Lunas',
+            'tanggal_bayar' => 'nullable|date', // Izinkan input tanggal dari kasir
         ]);
 
         // 2. Cari data pembayaran berdasarkan ID
@@ -122,9 +133,14 @@ class PembayaranController extends Controller
         // 4. Update status pembayaran sesuai input form
         $pembayaran->status_bayar = $request->status_bayar;
 
-        // 5. Catat tanggal bayar otomatis jika dilunasi hari ini
+        // 5. Catat tanggal bayar:
+        //    - Gunakan tanggal yang diisi kasir jika ada
+        //    - Fallback ke tanggal hari ini jika kasir tidak mengisi tanggal
+        //    - Kosongkan kembali jika status dikembalikan ke Belum Lunas
         if ($request->status_bayar === 'Lunas' && $statusLama !== 'Lunas') {
-            $pembayaran->tanggal_bayar = now();
+            $pembayaran->tanggal_bayar = $request->filled('tanggal_bayar')
+                ? $request->tanggal_bayar
+                : now();
         } elseif ($request->status_bayar === 'Belum Lunas') {
             $pembayaran->tanggal_bayar = null; // Hapus tanggal jika status dibatalkan
         }
@@ -161,8 +177,16 @@ class PembayaranController extends Controller
 
     public function destroy(string $id)
     {
-        $pembayaran = Pembayaran::query()->findOrFail($id);
+        $pembayaran = Pembayaran::query()->with(['siswa', 'tagihan'])->findOrFail($id);
+        $namaSiswa  = $pembayaran->siswa->nama_siswa ?? '-';
+        $namaTagihan = $pembayaran->tagihan->nama_tagihan ?? '-';
+        $status     = $pembayaran->status_bayar;
         $pembayaran->delete();
+
+        ActivityLogger::log(
+            'Hapus Data',
+            "Menghapus transaksi tagihan \"{$namaTagihan}\" milik siswa \"{$namaSiswa}\" (Status: {$status}) dari sistem"
+        );
 
         return redirect()->route('pembayaran.index')->with('success', 'Data transaksi berhasil dihapus!');
     }

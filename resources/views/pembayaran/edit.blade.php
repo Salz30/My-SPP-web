@@ -32,9 +32,10 @@
                 </div>
 
                 <div class="mb-4" id="div_tanggal" style="display: {{ $pembayaran->status_bayar == 'Lunas' ? 'block' : 'none' }};">
-                    <label class="form-label fw-bold text-dark">Tanggal Bayar</label>
-                    <input type="date" class="form-control form-control-lg bg-light border-0" name="tanggal_bayar" value="{{ old('tanggal_bayar', $pembayaran->tanggal_bayar) }}">
-                    <small class="text-muted mt-1 d-block"><i class="fa-solid fa-info-circle"></i> Kosongkan jika ingin otomatis menggunakan tanggal hari ini.</small>
+                    <label class="form-label fw-bold text-dark">Tanggal Bayar <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control form-control-lg bg-light border-0" name="tanggal_bayar"
+                        value="{{ old('tanggal_bayar', $pembayaran->tanggal_bayar ? \Carbon\Carbon::parse($pembayaran->tanggal_bayar)->format('Y-m-d') : now()->format('Y-m-d')) }}">
+                    <small class="text-muted mt-1 d-block"><i class="fa-solid fa-info-circle"></i> Isi sesuai tanggal siswa membayar secara fisik (boleh tanggal lampau).</small>
                 </div>
 
                 <div class="text-end">

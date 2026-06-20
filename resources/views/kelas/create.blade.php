@@ -29,8 +29,8 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="wali_kelas" class="form-label fw-bold text-dark">Nama Wali Kelas (Opsional)</label>
-                        <input type="text" class="form-control form-control-lg bg-light border-0 @error('wali_kelas') is-invalid @enderror" id="wali_kelas" name="wali_kelas" value="{{ old('wali_kelas') }}" placeholder="Contoh: Bpk. Ahmad">
+                        <label for="wali_kelas" class="form-label fw-bold text-dark">Nama Wali Kelas <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-lg bg-light border-0 @error('wali_kelas') is-invalid @enderror" id="wali_kelas" name="wali_kelas" value="{{ old('wali_kelas') }}" placeholder="Contoh: Bpk. Ahmad" required>
                         @error('wali_kelas')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

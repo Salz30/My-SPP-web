@@ -7,9 +7,6 @@
         <p class="text-muted mb-0">Kelola periode tagihan dan tenggat waktunya.</p>
     </div>
     <div class="col-md-6 text-end">
-        <a href="{{ route('tagihan.create-bulk') }}" class="btn btn-outline-primary shadow-sm me-2">
-            <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Generator Massal
-        </a>
         <a href="{{ route('tagihan.create') }}" class="btn btn-primary shadow-sm">
             <i class="fa-solid fa-plus me-1"></i> Buat Tagihan
         </a>
@@ -23,6 +20,17 @@
 </div>
 @endif
 
+{{-- Info callout cara kerja alur --}}
+<div class="alert border-0 rounded-4 mb-4 d-flex align-items-start gap-3"
+    style="background: linear-gradient(135deg, #ede9fe, #dbeafe); color: #1e1b4b;">
+    <i class="fa-solid fa-circle-info fa-lg mt-1" style="color: #6366f1;"></i>
+    <div>
+        <strong>Cara Membebankan Tagihan ke Siswa:</strong>
+        Setelah tagihan dibuat, klik tombol <span class="badge rounded-pill" style="background:#6366f1;color:#fff"><i class="fa-solid fa-bolt me-1"></i> Bebankan ke Siswa</span>
+        pada baris tagihan yang ingin Anda tetapkan. Sistem akan langsung membuka halaman pembebanan dengan tagihan tersebut sudah terpilih otomatis.
+    </div>
+</div>
+
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">
@@ -33,7 +41,7 @@
                         <th>Nama Tagihan</th>
                         <th>Kategori & Nominal</th>
                         <th>Tenggat Waktu</th>
-                        <th width="15%" class="text-center rounded-end">Aksi</th>
+                        <th width="28%" class="text-center rounded-end">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,6 +59,12 @@
                             </span>
                         </td>
                         <td class="text-center">
+                            {{-- Tombol utama: Bebankan ke Siswa --}}
+                            <a href="{{ route('pembayaran.create', ['id_tagihan' => $item->id_tagihan]) }}"
+                                class="btn btn-sm btn-primary rounded-pill px-3 me-1"
+                                title="Bebankan tagihan ini ke siswa">
+                                <i class="fa-solid fa-bolt me-1"></i> Bebankan
+                            </a>
                             <a href="{{ route('tagihan.edit', $item->id_tagihan) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Edit</a>
                             <form action="{{ route('tagihan.destroy', $item->id_tagihan) }}" method="POST" class="d-inline">
                                 @csrf
@@ -61,9 +75,9 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center py-4 text-muted">
-                            <i class="fa-solid fa-file-invoice fa-2x mb-2"></i><br>
-                            Belum ada data tagihan.
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            <i class="fa-solid fa-file-invoice fa-2x mb-2 d-block opacity-30"></i>
+                            Belum ada data tagihan. Klik <strong>+ Buat Tagihan</strong> untuk memulai.
                         </td>
                     </tr>
                     @endforelse

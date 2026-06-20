@@ -96,8 +96,9 @@ Buka browser Anda dan kunjungi: **http://127.0.0.1:8000**
 Untuk keperluan pengujian aplikasi, silakan gunakan akun berikut yang telah terisi secara otomatis melalui *Database Seeder*:
 
 **Hak Akses Admin / Kasir:**
-- **Email/Username:** `admin_utama`
-- **Password:** `admin123`
+- **Email:** `admin@myspp.test`
+- **Username:** `admin_utama`
+- **Password:** `AdminRahasia123!`
 
 **Hak Akses Siswa:**
 - Jika membuat user siswa baru maka harus membuat user nya di halaman admin.

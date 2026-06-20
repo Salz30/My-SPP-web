@@ -211,6 +211,11 @@
                 <span class="menu-text">Laporan Keuangan</span>
             </a>
 
+            <a href="{{ route('log.index') }}" class="menu-link {{ request()->routeIs('log.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-clock-rotate-left main-icon"></i>
+                <span class="menu-text">Log Aktivitas</span>
+            </a>
+
             <a data-bs-toggle="collapse" href="#masterDataMenu" role="button" aria-expanded="{{ request()->routeIs('siswa.*', 'kelas.*', 'kategori.*', 'tagihan.*') ? 'true' : 'false' }}" class="menu-link mt-2" style="background-color: rgba(255,255,255,0.03);">
                 <i class="fa-solid fa-database main-icon"></i>
                 <span class="menu-text d-flex justify-content-between align-items-center w-100">

@@ -19,9 +19,9 @@
                 <div class="mb-4">
                     <label class="form-label fw-bold text-dark">Pilih Tagihan <span class="text-danger">*</span></label>
                     <select class="form-select form-select-lg bg-light border-0 @error('id_tagihan') is-invalid @enderror" name="id_tagihan" required>
-                        <option value="" disabled selected>-- Pilih Tagihan --</option>
+                        <option value="" disabled {{ old('id_tagihan', $selected_tagihan ?? '') == '' ? 'selected' : '' }}>-- Pilih Tagihan --</option>
                         @foreach($tagihan as $t)
-                            <option value="{{ $t->id_tagihan }}" {{ old('id_tagihan') == $t->id_tagihan ? 'selected' : '' }}>
+                            <option value="{{ $t->id_tagihan }}" {{ old('id_tagihan', $selected_tagihan ?? '') == $t->id_tagihan ? 'selected' : '' }}>
                                 {{ $t->nama_tagihan }} (Rp {{ number_format($t->kategori->nominal_default ?? 0, 0, ',', '.') }})
                             </option>
                         @endforeach

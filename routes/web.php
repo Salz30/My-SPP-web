@@ -67,8 +67,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Route Log Aktivitas
         Route::get('/log-aktivitas', function () {
-            // Ambil data log, urutkan dari yang paling baru
-            $logs = \App\Models\LogAktivitas::with('user')->orderBy('created_at', 'desc')->get();
+            $query = \App\Models\LogAktivitas::with('user')->orderBy('created_at', 'desc');
+
+            // Filter berdasarkan jenis tindakan
+            if (request('filter_tindakan')) {
+                $query->where('tindakan', request('filter_tindakan'));
+            }
+            // Filter berdasarkan tanggal
+            if (request('filter_tanggal')) {
+                $query->whereDate('created_at', request('filter_tanggal'));
+            }
+            // Filter berdasarkan nama pengguna
+            if (request('filter_user')) {
+                $query->whereHas('user', function ($q) {
+                    $q->where('name', 'LIKE', '%' . request('filter_user') . '%');
+                });
+            }
+
+            $logs = $query->get();
             return view('log.index', compact('logs'));
         })->name('log.index');
     });
