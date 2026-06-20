@@ -1,0 +1,91 @@
+<?php
+
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KelasController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\KategoriPembayaranController;
+use App\Http\Controllers\TagihanController;
+use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Middleware\CheckRole;
+
+Route::get('/', function () {
+    if (auth()->check()) {
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('dashboard');
+        } elseif (auth()->user()->role === 'siswa') {
+            return redirect()->route('siswa.dashboard');
+        }
+    }
+    return redirect()->route('login');
+});
+
+// Kelompok Induk: Hanya bisa diakses oleh user yang sudah Login
+Route::middleware(['auth', 'verified'])->group(function () {
+    
+    // ==========================================
+    // RUTE BERSAMA (Admin & Siswa bisa akses profil)
+    // ==========================================
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // ==========================================
+    // AREA KHUSUS ADMIN / KASIR
+    // ==========================================
+    Route::middleware([CheckRole::class.':admin'])->group(function () {
+        
+        // Dashboard Admin
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        
+        // Master Data
+        Route::resource('kelas', KelasController::class);
+        Route::resource('siswa', SiswaController::class);
+        Route::resource('kategori', KategoriPembayaranController::class);
+
+        Route::resource('tagihan', TagihanController::class);
+        
+        // Transaksi Pembayaran
+        Route::resource('pembayaran', PembayaranController::class);
+        Route::get('/pembayaran/{id}/kwitansi', [PembayaranController::class, 'kwitansi'])->name('pembayaran.kwitansi');
+        Route::get('/api/siswa/search', [PembayaranController::class, 'searchSiswa'])->name('api.siswa.search');
+        Route::get('/kasir-cepat', [PembayaranController::class, 'kasirCepat'])->name('pembayaran.kasir-cepat');
+        Route::get('/api/siswa/{id}/tunggakan', [PembayaranController::class, 'getTunggakanSiswa'])->name('api.siswa.tunggakan');
+        Route::post('/kasir-cepat/bayar', [PembayaranController::class, 'prosesKasirCepat'])->name('pembayaran.proses-kasir-cepat');
+
+        // Laporan Keuangan
+        Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+        Route::post('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
+        // Laporan Keuangan
+        Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+        Route::post('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
+        // Tambahkan rute ekspor excel ini:
+        Route::post('/laporan/excel', [LaporanController::class, 'exportExcel'])->name('laporan.excel');
+        Route::post('/laporan/pdf', [LaporanController::class, 'exportPdf'])->name('laporan.pdf');
+
+        // Route Log Aktivitas
+        Route::get('/log-aktivitas', function () {
+            // Ambil data log, urutkan dari yang paling baru
+            $logs = \App\Models\LogAktivitas::with('user')->orderBy('created_at', 'desc')->get();
+            return view('log.index', compact('logs'));
+        })->name('log.index');
+    });
+
+    // ==========================================
+    // AREA KHUSUS SISWA
+    // ==========================================
+    Route::middleware([CheckRole::class.':siswa'])->group(function () {
+        
+        Route::get('/portal', [App\Http\Controllers\PortalController::class, 'index'])->name('siswa.dashboard');
+        Route::get('/portal/cara-pembayaran', [App\Http\Controllers\PortalController::class, 'caraPembayaran'])->name('siswa.cara-pembayaran');
+        Route::get('/portal/bantuan', [App\Http\Controllers\PortalController::class, 'bantuan'])->name('siswa.bantuan');
+        Route::get('/portal/profil', [App\Http\Controllers\PortalController::class, 'profil'])->name('siswa.profil');
+        Route::post('/portal/profil', [App\Http\Controllers\PortalController::class, 'updateProfil'])->name('siswa.profil.update');
+    });
+
+});
+
+// Memanggil rute-rute autentikasi bawaan Breeze (Login, Register, Logout)
+require __DIR__.'/auth.php';
