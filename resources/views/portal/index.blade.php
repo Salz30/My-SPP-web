@@ -279,7 +279,47 @@
             flex-direction: column;
             align-items: center;
             gap: 16px;
+        }
 
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .header-nav {
+                flex-direction: column;
+                padding: 16px;
+                gap: 16px;
+            }
+            .nav-left {
+                flex-direction: column;
+                gap: 16px;
+            }
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+                font-size: 14px;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .hero-section {
+                padding: 24px 16px;
+                text-align: center;
+                align-items: center;
+                display: flex;
+                flex-direction: column;
+            }
+            .hero-subtitle {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+            .hero-graphic {
+                display: none;
+            }
+            .container {
+                padding: 16px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -360,8 +400,11 @@
                     </div>
                     <h3 class="card-title">{{ $item->tagihan->nama_tagihan }}</h3>
                     <p class="card-meta">Lunas pada: {{ \Carbon\Carbon::parse($item->tanggal_bayar)->format('d M Y') }}</p>
-                    <div class="card-amount" style="font-size: 24px; color: var(--color-steel);">
-                        Rp {{ number_format($item->tagihan->kategori->nominal_default ?? 0, 0, ',', '.') }}
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto;">
+                        <div class="card-amount" style="font-size: 24px; color: var(--color-steel); margin:0;">
+                            Rp {{ number_format($item->tagihan->kategori->nominal_default ?? 0, 0, ',', '.') }}
+                        </div>
+                        <a href="{{ route('siswa.kwitansi', $item->id_pembayaran) }}" target="_blank" class="btn-ghost" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; padding: 6px 16px; border: 1px solid var(--color-sand); z-index:10; position:relative;">Cetak Bukti</a>
                     </div>
                 </div>
                 @empty

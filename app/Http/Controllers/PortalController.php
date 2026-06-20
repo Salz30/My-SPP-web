@@ -93,4 +93,23 @@ class PortalController extends Controller
 
         return redirect()->route('siswa.profil')->with('success', 'Profil dan data kontak berhasil diperbarui!');
     }
+
+    public function kwitansi(string $id)
+    {
+        $siswa = $this->getSiswa();
+        if (!$siswa) return abort(403, 'Data profil siswa tidak ditemukan.');
+
+        $pembayaran = Pembayaran::query()->with(['siswa.kelas', 'tagihan.kategori'])->findOrFail($id);
+
+        // Keamanan: Pastikan transaksi ini milik siswa yang sedang login
+        if ($pembayaran->id_siswa !== $siswa->id_siswa) {
+            return abort(403, 'Akses ditolak. Anda hanya bisa mencetak kwitansi Anda sendiri.');
+        }
+
+        if ($pembayaran->status_bayar !== 'Lunas') {
+            return redirect()->route('siswa.dashboard')->with('error', 'Kwitansi hanya bisa dicetak untuk tagihan yang sudah Lunas!');
+        }
+
+        return view('portal.kwitansi', compact('pembayaran'));
+    }
 }

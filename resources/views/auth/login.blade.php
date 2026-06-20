@@ -140,7 +140,7 @@
 
             <div class="form-group">
                 <label for="username">NISN / Username</label>
-                <input id="username" class="form-control" type="text" inputmode="numeric" name="username" value="{{ old('username') }}" required autofocus autocomplete="username">
+                <input id="username" class="form-control" type="text" name="username" value="{{ old('username') }}" required autofocus autocomplete="username">
                 @error('username')
                     <span class="error-message">{{ $message }}</span>
                 @enderror

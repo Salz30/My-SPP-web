@@ -102,6 +102,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/portal/bantuan', [App\Http\Controllers\PortalController::class, 'bantuan'])->name('siswa.bantuan');
         Route::get('/portal/profil', [App\Http\Controllers\PortalController::class, 'profil'])->name('siswa.profil');
         Route::post('/portal/profil', [App\Http\Controllers\PortalController::class, 'updateProfil'])->name('siswa.profil.update');
+        Route::get('/portal/kwitansi/{id}', [App\Http\Controllers\PortalController::class, 'kwitansi'])->name('siswa.kwitansi');
     });
 
 });
