@@ -85,4 +85,18 @@ class KategoriPembayaranController extends Controller
 
         return redirect()->route('kategori.index')->with('success', 'Kategori pembayaran berhasil dihapus!');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+        $kategori = KategoriPembayaran::whereIn('id_kategori', $request->ids)->get();
+        $count = $kategori->count();
+
+        foreach ($kategori as $k) {
+            $k->delete();
+        }
+
+        ActivityLogger::log('Hapus Massal', "Menghapus massal {$count} data kategori pembayaran.");
+        return redirect()->route('kategori.index')->with('success', "{$count} data kategori berhasil dihapus secara massal!");
+    }
 }

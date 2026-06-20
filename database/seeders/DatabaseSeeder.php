@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         // Memanggil seeder khusus untuk membuat akun Master Admin
         $this->call([
             AdminSeeder::class,
+            DemoSeeder::class,
         ]);
     }
 }

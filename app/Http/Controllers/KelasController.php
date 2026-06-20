@@ -75,4 +75,19 @@ class KelasController extends Controller
 
         return redirect()->route('kelas.index')->with('success', 'Data kelas berhasil dihapus!');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+        $kelas = Kelas::whereIn('id_kelas', $request->ids)->get();
+        $count = $kelas->count();
+
+        foreach ($kelas as $k) {
+            $k->delete();
+        }
+
+        ActivityLogger::log('Hapus Massal', "Menghapus massal {$count} data kelas");
+
+        return redirect()->route('kelas.index')->with('success', "{$count} data kelas berhasil dihapus secara massal!");
+    }
 }

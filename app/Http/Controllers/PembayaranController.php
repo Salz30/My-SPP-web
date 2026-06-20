@@ -309,4 +309,18 @@ class PembayaranController extends Controller
 
         return redirect()->route('pembayaran.kasir-cepat')->with('success', "Berhasil melunasi $count tagihan siswa!");
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+        $pembayaran = Pembayaran::whereIn('id_pembayaran', $request->ids)->get();
+        $count = $pembayaran->count();
+
+        foreach ($pembayaran as $p) {
+            $p->delete();
+        }
+
+        ActivityLogger::log('Hapus Massal', "Menghapus massal {$count} data transaksi pembayaran.");
+        return redirect()->route('pembayaran.index')->with('success', "{$count} data transaksi pembayaran berhasil dihapus secara massal!");
+    }
 }

@@ -41,13 +41,20 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         
         // Master Data
+        Route::post('kelas/bulk-destroy', [KelasController::class, 'bulkDestroy'])->name('kelas.bulk-destroy');
         Route::resource('kelas', KelasController::class);
+        
+        Route::post('siswa/bulk-destroy', [SiswaController::class, 'bulkDestroy'])->name('siswa.bulk-destroy');
         Route::resource('siswa', SiswaController::class);
+        
+        Route::post('kategori/bulk-destroy', [KategoriPembayaranController::class, 'bulkDestroy'])->name('kategori.bulk-destroy');
         Route::resource('kategori', KategoriPembayaranController::class);
 
+        Route::post('tagihan/bulk-destroy', [TagihanController::class, 'bulkDestroy'])->name('tagihan.bulk-destroy');
         Route::resource('tagihan', TagihanController::class);
         
         // Transaksi Pembayaran
+        Route::post('pembayaran/bulk-destroy', [PembayaranController::class, 'bulkDestroy'])->name('pembayaran.bulk-destroy');
         Route::resource('pembayaran', PembayaranController::class);
         Route::get('/pembayaran/{id}/kwitansi', [PembayaranController::class, 'kwitansi'])->name('pembayaran.kwitansi');
         Route::get('/api/siswa/search', [PembayaranController::class, 'searchSiswa'])->name('api.siswa.search');

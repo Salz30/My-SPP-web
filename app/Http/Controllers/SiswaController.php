@@ -166,4 +166,27 @@ class SiswaController extends Controller
 
         return redirect()->route('siswa.index')->with('success', 'Data siswa beserta akun login berhasil dihapus!');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+        $siswas = Siswa::whereIn('id_siswa', $request->ids)->get();
+        $count = $siswas->count();
+
+        foreach ($siswas as $siswa) {
+            // Hapus akun User terkait (soft delete)
+            if ($siswa->user) {
+                $siswa->user->delete();
+            }
+            // Hapus data Siswa
+            $siswa->delete();
+        }
+
+        ActivityLogger::log(
+            'Hapus Massal',
+            "Menghapus massal {$count} data siswa beserta akun loginnya"
+        );
+
+        return redirect()->route('siswa.index')->with('success', "{$count} data siswa berhasil dihapus secara massal!");
+    }
 }

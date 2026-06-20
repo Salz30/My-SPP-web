@@ -84,4 +84,18 @@ class TagihanController extends Controller
 
         return redirect()->route('tagihan.index')->with('success', 'Data tagihan berhasil dihapus!');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+        $tagihan = Tagihan::whereIn('id_tagihan', $request->ids)->get();
+        $count = $tagihan->count();
+
+        foreach ($tagihan as $t) {
+            $t->delete();
+        }
+
+        ActivityLogger::log('Hapus Massal', "Menghapus massal {$count} data tagihan.");
+        return redirect()->route('tagihan.index')->with('success', "{$count} data tagihan berhasil dihapus secara massal!");
+    }
 }
