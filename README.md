@@ -2,7 +2,7 @@
 
 **My-SPP** adalah sebuah Sistem Informasi Manajemen Pembayaran Sumbangan Pembinaan Pendidikan (SPP) berbasis web. Aplikasi ini dirancang untuk mendigitalisasi proses pencatatan, pelaporan, dan penagihan iuran SPP di sekolah secara terintegrasi, transparan, dan otomatis.
 
-Proyek ini dibangun sebagai pemenuhan Tugas Besar / Ujian Akhir Semester (UAS) pada mata kuliah Pemrograman Web.
+Proyek ini dibangun sebagai pemenuhan Tugas Besar / Ujian Akhir Semester (UAS) pada mata kuliah Pemrograman Web 2.
 
 ---
 
@@ -96,12 +96,16 @@ Buka browser Anda dan kunjungi: **http://127.0.0.1:8000**
 Untuk keperluan pengujian aplikasi, silakan gunakan akun berikut yang telah terisi secara otomatis melalui *Database Seeder*:
 
 **Hak Akses Admin / Kasir:**
-- **Email/Username:** `admin@example.com`
-- **Password:** `password`
+- **Email/Username:** `admin_utama`
+- **Password:** `admin123`
 
 **Hak Akses Siswa:**
-- Anda bisa login menggunakan **NISN Siswa** yang terdaftar di halaman Admin.
-- **Password Default Siswa:** `password`
+- Jika membuat user siswa baru maka harus membuat user nya di halaman admin.
+- **Password Default Siswa:** `Sesuai nomer NISN siswa`
+- **Contoh:**
+- `NISN: 00001`
+- `Password: 00001`
+- User siswa dapat mengganti passwordnya setelah login sebagai user (masuk menu pengaturan)
 
 ---
 
@@ -114,4 +118,4 @@ php artisan test
 *Sistem akan mengeksekusi puluhan skenario uji keamanan hak akses, filter laporan, logika pembayaran, dan jaminan keamanan tagihan dalam waktu kurang dari 5 detik.*
 
 ---
-*Dikembangkan dengan ❤️ sebagai Tugas Besar Ujian Akhir Semester.*
+*Dikembangkan oleh Developer sebagai Tugas Besar Pemograman Web 2.*
