@@ -21,14 +21,23 @@ class LaporanController extends Controller
 
         // 2. Filter Rentang Tanggal (Gunakan filled agar kebal dari input kosong)
         if ($request->filled('tanggal_awal') && $request->filled('tanggal_akhir')) {
-            // Jika mencari yang Belum Lunas, filter berdasarkan kapan tagihan itu dibuat di sistem
             if ($request->status_bayar == 'Belum Lunas') {
                 $query->whereDate('created_at', '>=', $request->tanggal_awal)
                       ->whereDate('created_at', '<=', $request->tanggal_akhir);
-            } else {
-                // Jika mencari Lunas atau Semua, filter berdasarkan kapan uang dibayarkan
+            } elseif ($request->status_bayar == 'Lunas') {
                 $query->whereDate('tanggal_bayar', '>=', $request->tanggal_awal)
                       ->whereDate('tanggal_bayar', '<=', $request->tanggal_akhir);
+            } else {
+                // Jika mencari Semua status
+                $query->where(function($q) use ($request) {
+                    $q->where(function($subQ) use ($request) {
+                        $subQ->whereDate('tanggal_bayar', '>=', $request->tanggal_awal)
+                             ->whereDate('tanggal_bayar', '<=', $request->tanggal_akhir);
+                    })->orWhere(function($subQ) use ($request) {
+                        $subQ->whereDate('created_at', '>=', $request->tanggal_awal)
+                             ->whereDate('created_at', '<=', $request->tanggal_akhir);
+                    });
+                });
             }
         }
 
@@ -67,7 +76,23 @@ class LaporanController extends Controller
         $query = \App\Models\Pembayaran::query()->with(['siswa.kelas', 'tagihan.kategori']);
 
         if (filled($tanggal_awal) && filled($tanggal_akhir)) {
-            $query->whereBetween('tanggal_bayar', [$tanggal_awal, $tanggal_akhir]);
+            if ($status_bayar == 'Belum Lunas') {
+                $query->whereDate('created_at', '>=', $tanggal_awal)
+                      ->whereDate('created_at', '<=', $tanggal_akhir);
+            } elseif ($status_bayar == 'Lunas') {
+                $query->whereDate('tanggal_bayar', '>=', $tanggal_awal)
+                      ->whereDate('tanggal_bayar', '<=', $tanggal_akhir);
+            } else {
+                $query->where(function($q) use ($tanggal_awal, $tanggal_akhir) {
+                    $q->where(function($subQ) use ($tanggal_awal, $tanggal_akhir) {
+                        $subQ->whereDate('tanggal_bayar', '>=', $tanggal_awal)
+                             ->whereDate('tanggal_bayar', '<=', $tanggal_akhir);
+                    })->orWhere(function($subQ) use ($tanggal_awal, $tanggal_akhir) {
+                        $subQ->whereDate('created_at', '>=', $tanggal_awal)
+                             ->whereDate('created_at', '<=', $tanggal_akhir);
+                    });
+                });
+            }
         }
         if (filled($status_bayar)) {
             $query->where('status_bayar', $status_bayar);
@@ -134,7 +159,23 @@ class LaporanController extends Controller
         $query = \App\Models\Pembayaran::query()->with(['siswa.kelas', 'tagihan.kategori']);
 
         if (filled($tanggal_awal) && filled($tanggal_akhir)) {
-            $query->whereBetween('tanggal_bayar', [$tanggal_awal, $tanggal_akhir]);
+            if ($status_bayar == 'Belum Lunas') {
+                $query->whereDate('created_at', '>=', $tanggal_awal)
+                      ->whereDate('created_at', '<=', $tanggal_akhir);
+            } elseif ($status_bayar == 'Lunas') {
+                $query->whereDate('tanggal_bayar', '>=', $tanggal_awal)
+                      ->whereDate('tanggal_bayar', '<=', $tanggal_akhir);
+            } else {
+                $query->where(function($q) use ($tanggal_awal, $tanggal_akhir) {
+                    $q->where(function($subQ) use ($tanggal_awal, $tanggal_akhir) {
+                        $subQ->whereDate('tanggal_bayar', '>=', $tanggal_awal)
+                             ->whereDate('tanggal_bayar', '<=', $tanggal_akhir);
+                    })->orWhere(function($subQ) use ($tanggal_awal, $tanggal_akhir) {
+                        $subQ->whereDate('created_at', '>=', $tanggal_awal)
+                             ->whereDate('created_at', '<=', $tanggal_akhir);
+                    });
+                });
+            }
         }
         if (filled($status_bayar)) {
             $query->where('status_bayar', $status_bayar);
