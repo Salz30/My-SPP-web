@@ -24,6 +24,14 @@
 
 <div class="card">
     <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <div class="input-group shadow-sm">
+                    <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                    <input type="text" id="searchKelas" class="form-control border-start-0 ps-0" placeholder="Cari Nama Kelas atau Wali Kelas...">
+                </div>
+            </div>
+        </div>
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
@@ -122,6 +130,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 form.submit();
             }
+        });
+    }
+
+    // Fitur Pencarian Tabel Data Kelas
+    const searchInput = document.getElementById('searchKelas');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('table tbody tr');
+            
+            rows.forEach(row => {
+                // Jangan sembunyikan baris pesan kosong (td colspan)
+                if (row.querySelector('td[colspan]')) return;
+                
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            });
         });
     }
 });
